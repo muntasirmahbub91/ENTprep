@@ -1,0 +1,11 @@
+import test from 'node:test';import assert from 'node:assert/strict';import fs from 'node:fs';import {grade,select,validate} from '../engine.mjs';
+const bank=JSON.parse(fs.readFileSync(new URL('../content/questions.json',import.meta.url)));
+test('1191 structurally valid v2 draft candidates',()=>{assert.equal(bank.length,1191);assert.deepEqual(validate(bank),[]);assert.equal(bank.filter(q=>q.question_type==='MTF').length,465);assert.equal(bank.filter(q=>q.question_type==='SBA').length,726);assert(bank.every(q=>q.status==='draft'));});
+const sample=select(bank,{seed:42});
+test('mock selection 5+5, no concept or variation reuse',()=>{assert.equal(sample.length,10);assert.equal(sample.filter(q=>q.question_type==='MTF').length,5);assert.equal(sample.filter(q=>q.question_type==='SBA').length,5);assert.equal(new Set(sample.map(q=>q.concept_id)).size,10);assert.equal(new Set(sample.map(q=>q.variation_group_id)).size,10);});
+test('seed reproducibility',()=>{assert.deepEqual(select(bank,{seed:42}).map(q=>q.question_code),select(bank,{seed:42}).map(q=>q.question_code));});
+test('all blank = zero',()=>assert.equal(grade(sample,{}).score,0));
+test('all correct = 10',()=>{const a={};for(const q of sample){a[q.question_code]=q.question_type==='MTF'?Object.fromEntries(q.options.map(o=>[o.label,o.truth_value])):{choice:q.options.find(o=>o.is_correct).label};}assert.equal(grade(sample,a).score,10);});
+test('all wrong = zero',()=>{const a={};for(const q of sample){a[q.question_code]=q.question_type==='MTF'?Object.fromEntries(q.options.map(o=>[o.label,!o.truth_value])):{choice:q.options.find(o=>!o.is_correct).label};}assert.equal(grade(sample,a).score,0);});
+test('18 correct MTF decisions + 3 SBA = 6.6',()=>{const a={};let count=0,sba=0;for(const q of sample){if(q.question_type==='MTF'){a[q.question_code]=Object.fromEntries(q.options.map(o=>[o.label,count++<18?o.truth_value:!o.truth_value]));}else{a[q.question_code]={choice:q.options.find(o=>sba<3?o.is_correct:!o.is_correct).label};sba++;}}assert.equal(grade(sample,a).score,6.6);});
+test('impossible restricted pool throws',()=>assert.throws(()=>select(bank.slice(0,4),{mtf:5,sba:5}),/Not enough/));
