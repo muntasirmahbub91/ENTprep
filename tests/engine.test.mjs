@@ -1,6 +1,6 @@
 import test from 'node:test';import assert from 'node:assert/strict';import fs from 'node:fs';import {grade,select,validate} from '../engine.mjs';
 const bank=JSON.parse(fs.readFileSync(new URL('../content/questions.json',import.meta.url)));
-test('1191 structurally valid v2 draft candidates',()=>{assert.equal(bank.length,1191);assert.deepEqual(validate(bank),[]);assert.equal(bank.filter(q=>q.question_type==='MTF').length,465);assert.equal(bank.filter(q=>q.question_type==='SBA').length,726);assert(bank.every(q=>q.status==='draft'));});
+test('1398 structurally valid v7 draft candidates',()=>{assert.equal(bank.length,1398);assert.deepEqual(validate(bank),[]);assert.equal(bank.filter(q=>q.question_type==='MTF').length,718);assert.equal(bank.filter(q=>q.question_type==='SBA').length,680);assert(bank.every(q=>q.status==='draft'));});
 const sample=select(bank,{seed:42});
 test('mock selection 5+5, no concept or variation reuse',()=>{assert.equal(sample.length,10);assert.equal(sample.filter(q=>q.question_type==='MTF').length,5);assert.equal(sample.filter(q=>q.question_type==='SBA').length,5);assert.equal(new Set(sample.map(q=>q.concept_id)).size,10);assert.equal(new Set(sample.map(q=>q.variation_group_id)).size,10);});
 test('seed reproducibility',()=>{assert.deepEqual(select(bank,{seed:42}).map(q=>q.question_code),select(bank,{seed:42}).map(q=>q.question_code));});

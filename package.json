@@ -1,1 +1,10 @@
-{"name":"ent-prep-mbbs","version":"1.0.0","private":true,"type":"module","scripts":{"start":"python3 -m http.server 8080","test":"node --test tests/*.test.mjs","convert":"python3 scripts/convert-pilot.py"},"description":"Dependency-free frontend-only ENT mock exam web app"}
+{
+  "name": "ent-prep-clinical-card",
+  "version": "7.2.0",
+  "type": "module",
+  "private": true,
+  "scripts": {
+    "start": "python3 -m http.server 8080",
+    "test": "node --test tests/*.test.mjs"
+  }
+}

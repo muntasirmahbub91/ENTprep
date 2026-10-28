@@ -1,0 +1,15 @@
+{
+  "records": 1398,
+  "sections": 19,
+  "held_duplicate_records": 119,
+  "other_scope_holds": 30,
+  "draft_preview_records": 1249,
+  "approved_records": 0,
+  "all_ids_unique": true,
+  "structural_validation": "passed",
+  "residual_conceptual_overlap": "unresolved, require independent editorial adjudication",
+  "faculty_signoff": "not performed",
+  "per_item_25_25_deficit": 61,
+  "automated_tests": "13/13 passed",
+  "visual_browser_test": "not performed"
+}
